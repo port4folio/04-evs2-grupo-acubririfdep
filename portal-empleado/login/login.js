@@ -27,7 +27,7 @@ const USERS = [
 ];
 
 /**
- * Genera el hash SHA-256 de un texto.
+ * Genera el hash SHA-256 de un texto
  * @param {string} text - Texto a hashear
  * @returns {Promise<string>} Hash en formato hexadecimal
  */
