@@ -11,14 +11,13 @@
   <div class="login-wrapper">
     <div class="login-card">
 
-      <!-- Encabezado -->
       <div class="login-header">
         <div class="logo-icon">🔒</div>
         <h1 class="company-name">Seguridad LTDA</h1>
         <p class="portal-label">Portal del Empleado</p>
       </div>
 
-      <form action="#" method="post">
+      <form id="loginForm">
 
         <div class="form-group">
           <label for="username">Usuario corporativo</label>
@@ -44,15 +43,10 @@
           />
         </div>
 
+        <div class="alert alert-error" id="loginError" hidden>
+          Credenciales inválidas. Verifica tu usuario y contraseña.
+        </div>
+
         <button type="submit" class="btn-login">
           Iniciar sesión
         </button>
-
-      </form>
-
-      <p class="help-text">¿Problemas para ingresar? Contacta a TI.</p>
-    </div>
-  </div>
-
-</body>
-</html>
