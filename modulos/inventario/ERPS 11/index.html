@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Bodegas</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-inner">
+      <span class="header-icon">🏭</span>
+      <div>
+        <div class="header-title">Sistema de Gestión de Bodegas</div>
+        <div class="header-sub">Control de inventario por ubicación · Entradas y salidas</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- DASHBOARD -->
+    <div class="dashboard">
+      <div class="dash-card">
+        <span class="dash-num" id="dash-bodegas">0</span>
+        <span class="dash-label">Bodegas</span>
+      </div>
+      <div class="dash-card">
+        <span class="dash-num" id="dash-unidades">0</span>
+        <span class="dash-label">Unidades stock</span>
+      </div>
+      <div class="dash-card">
+        <span class="dash-num" id="dash-movs">0</span>
+        <span class="dash-label">Movimientos</span>
+      </div>
+      <div class="dash-card">
+        <span class="dash-num" id="dash-entradas">0</span>
+        <span class="dash-label">Entradas</span>
+      </div>
+      <div class="dash-card">
+        <span class="dash-num" id="dash-salidas">0</span>
+        <span class="dash-label">Salidas</span>
+      </div>
+    </div>
+
+    <!-- ALERTA -->
+    <div id="alerta" class="alerta oculto"></div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="bodegas">🏭 Bodegas</button>
+      <button class="tab-btn" data-tab="movimientos">🔄 Movimientos</button>
+      <button class="tab-btn" data-tab="historial">📋 Historial</button>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- TAB: BODEGAS                           -->
+    <!-- ═══════════════════════════════════════ -->
+    <section id="tab-bodegas" class="tab-panel active">
+
+      <div class="card">
+        <h2 class="card-title">Registrar nueva bodega</h2>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="b-nombre">Nombre de la bodega *</label>
+            <input id="b-nombre" type="text" placeholder="Bodega Principal Norte" />
+          </div>
+          <div class="field">
+            <label for="b-codigo">Código único *</label>
+            <input id="b-codigo" type="text" placeholder="BOD-001" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="b-ubicacion">Ubicación / Dirección</label>
+            <input id="b-ubicacion" type="text" placeholder="Av. Industrial 450, Galpón 3" />
+          </div>
+          <div class="field">
+            <label for="b-desc">Descripción</label>
+            <input id="b-desc" type="text" placeholder="Bodega de materias primas..." />
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" id="btn-guardar-bodega">➕ Crear bodega</button>
+          <button class="btn btn-secondary" id="btn-limpiar-bodega">Limpiar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Bodegas registradas</h2>
+        <div id="lista-bodegas">
+          <p class="vacio">No hay bodegas registradas aún.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- TAB: MOVIMIENTOS                       -->
+    <!-- ═══════════════════════════════════════ -->
+    <section id="tab-movimientos" class="tab-panel">
+
+      <div class="card">
+        <h2 class="card-title">Registrar movimiento de inventario</h2>
+
+        <!-- Tipo de movimiento -->
+        <div class="tipo-selector">
+          <input class="tipo-radio" type="radio" name="m-tipo" id="m-tipo-entrada" value="entrada" checked />
+          <label class="tipo-label tipo-label-entrada" for="m-tipo-entrada">📥 Entrada</label>
+
+          <input class="tipo-radio" type="radio" name="m-tipo" id="m-tipo-salida" value="salida" />
+          <label class="tipo-label tipo-label-salida" for="m-tipo-salida">📤 Salida</label>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="m-bodega">Bodega *</label>
+            <select id="m-bodega">
+              <option value="">— Seleccionar bodega —</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="m-producto">Producto *</label>
+            <input id="m-producto" type="text" placeholder="Ej: Caja de cartón, Pallets, etc." />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="m-cantidad">Cantidad *</label>
+            <input id="m-cantidad" type="number" min="1" placeholder="0" />
+          </div>
+          <div class="field">
+            <label for="m-notas">Notas / Referencia</label>
+            <input id="m-notas" type="text" placeholder="Nro. guía, orden de compra, etc." />
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" id="btn-registrar-mov">✅ Registrar movimiento</button>
+          <button class="btn btn-secondary" id="btn-limpiar-mov">Limpiar</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- TAB: HISTORIAL                         -->
+    <!-- ═══════════════════════════════════════ -->
+    <section id="tab-historial" class="tab-panel">
+
+      <div class="card">
+        <h2 class="card-title">Historial de movimientos</h2>
+
+        <div class="historial-toolbar">
+          <div class="filtros">
+            <button class="filtro-btn activo" data-filtro="todos">Todos</button>
+            <button class="filtro-btn" data-filtro="entrada">📥 Entradas</button>
+            <button class="filtro-btn" data-filtro="salida">📤 Salidas</button>
+          </div>
+          <div class="acciones-historial">
+            <button class="btn btn-export" id="btn-exportar-csv">⬇ Exportar CSV</button>
+            <button class="btn btn-danger" id="btn-limpiar-todo">🗑 Borrar todo</button>
+          </div>
+        </div>
+
+        <div id="lista-historial">
+          <p class="vacio">No hay movimientos registrados aún.</p>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="storage.js"></script>
+  <script src="movimientos.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

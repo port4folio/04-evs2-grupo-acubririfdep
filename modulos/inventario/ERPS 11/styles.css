@@ -1,0 +1,518 @@
+/* ============================================
+   BODEGAS — Industrial Utility Design
+   Fuente: IBM Plex Mono + IBM Plex Sans
+   Paleta: naranja almacén + gris carbón
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+/* ─── VARIABLES ──────────────────────────────── */
+:root {
+  --bg:           #111318;
+  --surface:      #1a1e27;
+  --surface2:     #22273300;
+  --border:       #2e3445;
+  --border-light: #3a4055;
+  --text:         #e8eaf0;
+  --muted:        #7a8099;
+  --accent:       #f97316;
+  --accent-dim:   #7c3a10;
+  --accent-light: #fff1e8;
+  --green:        #22c55e;
+  --green-dim:    #14532d;
+  --red:          #ef4444;
+  --red-dim:      #7f1d1d;
+  --blue:         #60a5fa;
+  --blue-dim:     #1e3a5f;
+  --radius:       6px;
+  --radius-lg:    10px;
+  --mono:         'IBM Plex Mono', monospace;
+  --sans:         'IBM Plex Sans', sans-serif;
+  --shadow:       0 2px 12px rgba(0,0,0,0.4);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14.5px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+/* ─── HEADER ─────────────────────────────────── */
+.header {
+  background: var(--surface);
+  border-bottom: 2px solid var(--accent);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.header-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 60px;
+}
+
+.header-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.header-title {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.header-sub {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+}
+
+/* ─── CONTAINER ──────────────────────────────── */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ─── DASHBOARD ──────────────────────────────── */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 700px) {
+  .dashboard { grid-template-columns: repeat(2, 1fr); }
+}
+
+.dash-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  text-align: center;
+  transition: border-color .2s;
+}
+
+.dash-card:hover { border-color: var(--accent); }
+
+.dash-num {
+  display: block;
+  font-family: var(--mono);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.dash-label {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-top: 2px;
+}
+
+/* ─── TABS ───────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+
+.tab-btn {
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  padding: .55rem 1.1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .2s, border-color .2s;
+  margin-bottom: -1px;
+  letter-spacing: 0.02em;
+}
+
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ─── ALERTA ─────────────────────────────────── */
+.alerta {
+  padding: .7rem 1.1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1.2rem;
+  font-size: 13.5px;
+  font-weight: 500;
+  border-left: 4px solid;
+}
+
+.alerta-success { background: rgba(34,197,94,.1); border-color: var(--green); color: var(--green); }
+.alerta-error   { background: rgba(239,68,68,.1);  border-color: var(--red);   color: var(--red); }
+.alerta-info    { background: rgba(96,165,250,.1); border-color: var(--blue);  color: var(--blue); }
+.oculto { display: none !important; }
+
+/* ─── CARD ───────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.4rem;
+  margin-bottom: 1.2rem;
+  box-shadow: var(--shadow);
+}
+
+.card-title {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* ─── FORMULARIO ─────────────────────────────── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+
+@media (max-width: 600px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+.field { display: flex; flex-direction: column; gap: 5px; margin-bottom: .2rem; }
+
+.field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.field input,
+.field select,
+.field textarea {
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: .55rem .8rem;
+  transition: border-color .2s, box-shadow .2s;
+  outline: none;
+  width: 100%;
+}
+
+.field input::placeholder,
+.field textarea::placeholder { color: #4a5060; }
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(249,115,22,.12);
+}
+
+.field textarea { min-height: 70px; resize: vertical; }
+
+.field select option { background: var(--surface); }
+
+/* ─── BOTONES ────────────────────────────────── */
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: .55rem 1.2rem;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+  letter-spacing: 0.02em;
+}
+
+.btn:active { transform: scale(.97); }
+.btn:hover  { opacity: .88; }
+
+.btn-primary   { background: var(--accent); color: #fff; }
+.btn-secondary { background: var(--border); color: var(--text); }
+.btn-danger    { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+.btn-export    { background: var(--blue-dim); color: var(--blue); border: 1px solid var(--blue); }
+
+/* ─── TIPO MOVIMIENTO ────────────────────────── */
+.tipo-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.tipo-radio { display: none; }
+
+.tipo-label {
+  flex: 1;
+  text-align: center;
+  padding: .75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all .2s;
+  color: var(--muted);
+}
+
+.tipo-radio:checked + .tipo-label {
+  border-width: 2px;
+}
+
+#m-tipo-entrada:checked + .tipo-label-entrada {
+  background: rgba(34,197,94,.1);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+#m-tipo-salida:checked + .tipo-label-salida {
+  background: rgba(239,68,68,.1);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* ─── TARJETAS DE BODEGA ─────────────────────── */
+.bodega-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.2rem;
+  margin-bottom: .8rem;
+  background: var(--bg);
+  transition: border-color .2s;
+}
+
+.bodega-card:hover { border-color: var(--accent); }
+
+.bodega-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: .7rem;
+}
+
+.badge-codigo {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--accent-dim);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.08em;
+  margin-right: 8px;
+}
+
+.bodega-nombre {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.bodega-ubi {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-left: 10px;
+}
+
+.bodega-acciones { display: flex; gap: 8px; flex-shrink: 0; }
+
+.btn-icono {
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: .35rem .8rem;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: opacity .15s;
+  font-family: var(--sans);
+}
+
+.btn-icono:hover { opacity: .75; }
+.btn-mover  { background: rgba(249,115,22,.15); color: var(--accent); border: 1px solid var(--accent-dim); }
+.btn-danger { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,.3); }
+
+.bodega-stats {
+  display: flex;
+  gap: 1.2rem;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: .6rem;
+}
+
+.bodega-stats strong { color: var(--text); }
+
+.bodega-productos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: .5rem;
+}
+
+.tag-producto {
+  background: rgba(96,165,250,.1);
+  border: 1px solid var(--blue-dim);
+  color: var(--blue);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+.bodega-desc {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: .5rem;
+  font-style: italic;
+}
+
+/* ─── HISTORIAL ──────────────────────────────── */
+.historial-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filtros { display: flex; gap: 6px; }
+
+.filtro-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: .3rem .85rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+  font-family: var(--sans);
+}
+
+.filtro-btn.activo,
+.filtro-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.mov-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: .8rem 1rem;
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: background .15s;
+}
+
+.mov-row:hover { background: rgba(255,255,255,.03); }
+
+.mov-tipo-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  min-width: 80px;
+  text-align: center;
+  font-family: var(--mono);
+}
+
+.mov-tipo-badge.entrada { background: var(--green-dim); color: var(--green); }
+.mov-tipo-badge.salida  { background: var(--red-dim);   color: var(--red); }
+
+.mov-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.mov-info strong { font-size: 14px; }
+.mov-bodega { font-size: 12px; color: var(--muted); }
+
+.mov-cantidad {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  min-width: 70px;
+  text-align: right;
+}
+
+.mov-cantidad.entrada { color: var(--green); }
+.mov-cantidad.salida  { color: var(--red); }
+
+.mov-fecha {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-family: var(--mono);
+  white-space: nowrap;
+}
+
+.mov-nota { font-size: 14px; cursor: help; }
+
+/* ─── UTILIDADES ─────────────────────────────── */
+.vacio {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13.5px;
+  padding: 2rem 0;
+}
+
+.vacio-sm {
+  color: var(--muted);
+  font-size: 12.5px;
+  margin-top: .4rem;
+}
+
+.acciones-historial {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
