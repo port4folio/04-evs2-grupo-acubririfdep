@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Licencias Médicas — RRHH</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="header-title">Sistema de Licencias Médicas</h1>
+        <p class="header-sub">Gestión de ausencias médicas y remuneraciones — RRHH</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- KPI ROW -->
+    <div class="kpi-row">
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-icon">👥</div>
+        <div class="kpi-data">
+          <span class="kpi-num" id="kpi-empleados">0</span>
+          <span class="kpi-label">Empleados</span>
+        </div>
+      </div>
+      <div class="kpi-card kpi-red">
+        <div class="kpi-icon">🏥</div>
+        <div class="kpi-data">
+          <span class="kpi-num" id="kpi-licencias">0</span>
+          <span class="kpi-label">Licencias</span>
+        </div>
+      </div>
+      <div class="kpi-card kpi-amber">
+        <div class="kpi-icon">📅</div>
+        <div class="kpi-data">
+          <span class="kpi-num" id="kpi-dias">0</span>
+          <span class="kpi-label">Días acumulados</span>
+        </div>
+      </div>
+      <div class="kpi-card kpi-green">
+        <div class="kpi-icon">💰</div>
+        <div class="kpi-data">
+          <span class="kpi-num" id="kpi-subsidio">$0</span>
+          <span class="kpi-label">Subsidio estimado</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="empleados">👤 Empleados</button>
+      <button class="tab" data-tab="licencias">🏥 Licencias</button>
+      <button class="tab" data-tab="remuneraciones">💰 Remuneraciones</button>
+      <button class="tab" data-tab="estadisticas">📊 Estadísticas</button>
+    </nav>
+
+    <!-- ALERT -->
+    <div id="alert-box" class="alert hidden"></div>
+
+    <!-- ══════════════════════════════════════
+         TAB: EMPLEADOS
+    ══════════════════════════════════════ -->
+    <section id="tab-empleados" class="tab-section active">
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <span class="panel-icon">➕</span> Registrar empleado
+          </h2>
+        </div>
+        <div class="panel-body">
+          <div class="grid-2">
+            <div class="field">
+              <label for="e-nombre">Nombre completo <span class="req">*</span></label>
+              <input id="e-nombre" type="text" placeholder="María González Rojas" />
+            </div>
+            <div class="field">
+              <label for="e-rut">RUT <span class="req">*</span></label>
+              <input id="e-rut" type="text" placeholder="12.345.678-9" />
+            </div>
+          </div>
+          <div class="grid-3">
+            <div class="field">
+              <label for="e-cargo">Cargo <span class="req">*</span></label>
+              <input id="e-cargo" type="text" placeholder="Analista contable" />
+            </div>
+            <div class="field">
+              <label for="e-depto">Departamento</label>
+              <input id="e-depto" type="text" placeholder="Finanzas" />
+            </div>
+            <div class="field">
+              <label for="e-sueldo">Sueldo base ($) <span class="req">*</span></label>
+              <input id="e-sueldo" type="number" placeholder="600000" min="0" />
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="field">
+              <label for="e-email">Email</label>
+              <input id="e-email" type="email" placeholder="maria@empresa.cl" />
+            </div>
+            <div class="field">
+              <label for="e-prevision">Previsión de salud</label>
+              <select id="e-prevision">
+                <option value="fonasa">FONASA</option>
+                <option value="isapre">ISAPRE</option>
+              </select>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btn-guardar-emp">Guardar empleado</button>
+            <button class="btn btn-ghost" id="btn-limpiar-emp">Limpiar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title"><span class="panel-icon">📋</span> Empleados registrados</h2>
+        </div>
+        <div class="panel-body">
+          <div id="lista-empleados">
+            <p class="empty-msg">No hay empleados registrados aún.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════
+         TAB: LICENCIAS
+    ══════════════════════════════════════ -->
+    <section id="tab-licencias" class="tab-section">
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title"><span class="panel-icon">📝</span> Registrar licencia médica</h2>
+        </div>
+        <div class="panel-body">
+          <div class="grid-2">
+            <div class="field">
+              <label for="l-empleado">Empleado <span class="req">*</span></label>
+              <select id="l-empleado">
+                <option value="">— Seleccionar empleado —</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="l-tipo">Tipo de licencia <span class="req">*</span></label>
+              <select id="l-tipo">
+                <option value="comun">Enfermedad o accidente común</option>
+                <option value="laboral">Accidente del trabajo / Enf. profesional</option>
+                <option value="maternal">Pre y postnatal (maternal)</option>
+                <option value="paternal">Postnatal parental (padre)</option>
+                <option value="catastrofica">Enfermedad catastrófica o terminal</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid-3">
+            <div class="field">
+              <label for="l-inicio">Fecha de inicio <span class="req">*</span></label>
+              <input id="l-inicio" type="date" />
+            </div>
+            <div class="field">
+              <label for="l-termino">Fecha de término <span class="req">*</span></label>
+              <input id="l-termino" type="date" />
+            </div>
+            <div class="field">
+              <label>Días de licencia</label>
+              <div class="dias-badge" id="dias-preview">— días</div>
+            </div>
+          </div>
+          <div class="grid-3">
+            <div class="field">
+              <label for="l-folio">N° de folio</label>
+              <input id="l-folio" type="text" placeholder="LM-2025-0001" />
+            </div>
+            <div class="field">
+              <label for="l-subsidio">% Subsidio aplicado</label>
+              <select id="l-subsidio">
+                <option value="100">100% — Accidente laboral / Maternal</option>
+                <option value="90" selected>90% — Enfermedad común (estándar)</option>
+                <option value="75">75% — Reducido</option>
+                <option value="0">0% — Sin subsidio</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="l-estado">Estado</label>
+              <select id="l-estado">
+                <option value="activa">Activa</option>
+                <option value="cerrada">Cerrada / Reintegrado</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="l-diagnostico">Diagnóstico (opcional)</label>
+            <input id="l-diagnostico" type="text" placeholder="Ej: Síndrome gripal, fractura, etc." />
+          </div>
+          <div class="field">
+            <label for="l-obs">Observaciones</label>
+            <textarea id="l-obs" placeholder="Indicaciones del médico, reposo parcial, etc."></textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btn-guardar-lic">Registrar licencia</button>
+            <button class="btn btn-ghost" id="btn-limpiar-lic">Limpiar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title"><span class="panel-icon">📋</span> Licencias registradas</h2>
+          <div class="filter-row">
+            <select id="filtro-tipo-lic" class="filter-select">
+              <option value="">Todos los tipos</option>
+              <option value="comun">Común</option>
+              <option value="laboral">Laboral</option>
+              <option value="maternal">Maternal</option>
+              <option value="paternal">Paternal</option>
+              <option value="catastrofica">Catastrófica</option>
+            </select>
+            <select id="filtro-estado-lic" class="filter-select">
+              <option value="">Todos los estados</option>
+              <option value="activa">Activa</option>
+              <option value="cerrada">Cerrada</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div id="lista-licencias">
+            <p class="empty-msg">No hay licencias registradas aún.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════
+         TAB: REMUNERACIONES
+    ══════════════════════════════════════ -->
+    <section id="tab-remuneraciones" class="tab-section">
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title"><span class="panel-icon">📅</span> Período de cálculo</h2>
+        </div>
+        <div class="panel-body">
+          <div class="grid-2">
+            <div class="field">
+              <label for="r-mes">Mes</label>
+              <select id="r-mes">
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="r-anio">Año</label>
+              <input id="r-anio" type="number" value="2025" min="2020" max="2030" />
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btn-calcular">Calcular impacto en remuneraciones</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-resultado-rem" style="display:none;">
+        <div class="panel-header">
+          <h2 class="panel-title"><span class="panel-icon">💰</span> Resultado del período</h2>
+          <button class="btn btn-ghost btn-sm" id="btn-exportar-rem">⬇ Exportar .txt</button>
+        </div>
+        <div class="panel-body">
+          <div id="resultado-remuneraciones"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════
+         TAB: ESTADÍSTICAS
+    ══════════════════════════════════════ -->
+    <section id="tab-estadisticas" class="tab-section">
+
+      <div class="stats-grid">
+
+        <div class="panel stat-panel">
+          <div class="panel-header">
+            <h2 class="panel-title"><span class="panel-icon">📊</span> Por tipo de licencia</h2>
+          </div>
+          <div class="panel-body">
+            <div id="chart-tipo"></div>
+          </div>
+        </div>
+
+        <div class="panel stat-panel">
+          <div class="panel-header">
+            <h2 class="panel-title"><span class="panel-icon">🏆</span> Empleados con más licencias</h2>
+          </div>
+          <div class="panel-body">
+            <div id="chart-empleados"></div>
+          </div>
+        </div>
+
+        <div class="panel stat-panel-full">
+          <div class="panel-header">
+            <h2 class="panel-title"><span class="panel-icon">📈</span> Indicadores generales</h2>
+          </div>
+          <div class="panel-body">
+            <div id="indicadores-generales" class="indicadores-grid"></div>
+          </div>
+        </div>
+
+        <div class="panel stat-panel-full">
+          <div class="panel-header">
+            <h2 class="panel-title"><span class="panel-icon">📅</span> Licencias por mes</h2>
+          </div>
+          <div class="panel-body">
+            <div id="chart-meses"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>Sistema de Licencias Médicas — Módulo RRHH &nbsp;|&nbsp; Datos almacenados localmente en el navegador</p>
+  </footer>
+
+  <script src="storage.js"></script>
+  <script src="calculos.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
