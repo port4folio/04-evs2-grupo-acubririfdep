@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ERPS-01 — Ficha de Empleado | Seguridad LTDA</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<nav class="topbar">
+  <div class="topbar-logo">ERPS</div>
+  <div class="topbar-sep"></div>
+  <div class="topbar-breadcrumb">
+    <span onclick="showList()" style="cursor:pointer">Empleados</span>
+    <span>›</span>
+    <span id="breadcrumb-current">Nuevo empleado</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-secondary btn-sm" onclick="showList()">← Ver listado</button>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- ══════════════════════════════════════════════
+       VISTA: LISTADO DE EMPLEADOS
+  ══════════════════════════════════════════════ -->
+  <div id="employee-list-view" class="employee-list">
+    <div class="page-header">
+      <div class="badge-hu">📋 ERPS-01</div>
+      <div class="page-title">Empleados registrados</div>
+      <div class="page-subtitle">Gestión de fichas del personal de Seguridad LTDA</div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <div id="emp-count" style="font-size:13px; color:var(--text2)">0 empleados</div>
+      <button class="btn btn-primary" onclick="showForm(null)">+ Nuevo empleado</button>
+    </div>
+
+    <div id="emp-list-container"></div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       VISTA: FORMULARIO DE EMPLEADO
+  ══════════════════════════════════════════════ -->
+  <div id="form-view">
+
+    <div class="page-header">
+      <div class="badge-hu">📋 ERPS-01</div>
+      <div class="page-title" id="form-title">Nueva ficha de empleado</div>
+      <div class="page-subtitle">
+        Ingrese todos los datos del trabajador.
+        Los campos con <span style="color:var(--danger)">*</span> son obligatorios.
+      </div>
+    </div>
+
+    <!-- STEPPER -->
+    <div class="stepper">
+      <div class="step-item active" data-step="0" onclick="goToStep(0)">
+        <div class="step-num" id="sn0">1</div>
+        <div><div class="step-label">Datos personales</div></div>
+      </div>
+      <div class="step-item" data-step="1" onclick="goToStep(1)">
+        <div class="step-num" id="sn1">2</div>
+        <div><div class="step-label">Datos laborales</div></div>
+      </div>
+      <div class="step-item" data-step="2" onclick="goToStep(2)">
+        <div class="step-num" id="sn2">3</div>
+        <div><div class="step-label">Previsión</div></div>
+      </div>
+      <div class="step-item" data-step="3" onclick="goToStep(3)">
+        <div class="step-num" id="sn3">4</div>
+        <div><div class="step-label">Cargas familiares</div></div>
+      </div>
+    </div>
+
+
+    <!-- ── PASO 0: DATOS PERSONALES ── -->
+    <div class="section visible" id="step-0">
+      <div class="section-header">
+        <div class="section-icon">👤</div>
+        <div>
+          <div class="section-title">Datos personales</div>
+          <div class="section-desc">Información de identificación y contacto del empleado</div>
+        </div>
+      </div>
+      <div class="section-body">
+
+        <!-- Foto + Nombres -->
+        <div class="photo-area">
+          <div>
+            <div class="form-label" style="margin-bottom:6px">Fotografía</div>
+            <div class="photo-upload" onclick="document.getElementById('photo-input').click()">
+              <img id="photo-preview" src="" style="display:none" alt="Foto del empleado">
+              <div class="photo-upload-text" id="photo-text">📷<br>Subir foto</div>
+              <input type="file" id="photo-input" accept="image/*" onchange="previewPhoto(this)">
+            </div>
+          </div>
+          <div class="photo-fields">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="nombre1">Primer nombre <span class="required">*</span></label>
+                <input class="form-input" id="nombre1" placeholder="Ej: Juan" oninput="validateField(this)">
+                <span class="field-error" id="err-nombre1">Campo requerido</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="nombre2">Segundo nombre</label>
+                <input class="form-input" id="nombre2" placeholder="Ej: Carlos">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="apellidop">Apellido paterno <span class="required">*</span></label>
+                <input class="form-input" id="apellidop" placeholder="Ej: González" oninput="validateField(this)">
+                <span class="field-error" id="err-apellidop">Campo requerido</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="apellidom">Apellido materno <span class="required">*</span></label>
+                <input class="form-input" id="apellidom" placeholder="Ej: Pérez" oninput="validateField(this)">
+                <span class="field-error" id="err-apellidom">Campo requerido</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="subsection">Identificación</div>
+        <div class="form-grid cols-3">
+          <div class="form-group">
+            <label class="form-label" for="rut">RUT <span class="required">*</span></label>
+            <input class="form-input" id="rut" placeholder="Ej: 12.345.678-9"
+                   oninput="formatRut(this)" maxlength="12">
+            <span class="field-error" id="err-rut">RUT inválido</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="fechaNac">Fecha de nacimiento <span class="required">*</span></label>
+            <input class="form-input" type="date" id="fechaNac" oninput="validateField(this)">
+            <span class="field-error" id="err-fechaNac">Campo requerido</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="genero">Género <span class="required">*</span></label>
+            <select class="form-select" id="genero" onchange="validateField(this)">
+              <option value="">Seleccionar...</option>
+              <option>Masculino</option>
+              <option>Femenino</option>
+              <option>No binario</option>
+              <option>Prefiero no indicar</option>
+            </select>
+            <span class="field-error" id="err-genero">Campo requerido</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nacionalidad">Nacionalidad <span class="required">*</span></label>
+            <select class="form-select" id="nacionalidad" onchange="validateField(this)">
+              <option value="">Seleccionar...</option>
+              <option selected>Chilena</option>
+              <option>Argentina</option><option>Boliviana</option>
+              <option>Colombiana</option><option>Peruana</option>
+              <option>Venezolana</option><option>Otra</option>
+            </select>
+            <span class="field-error" id="err-nacionalidad">Campo requerido</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="estadoCivil">Estado civil</label>
+            <select class="form-select" id="estadoCivil">
+              <option value="">Seleccionar...</option>
+              <option>Soltero/a</option><option>Casado/a</option>
+              <option>Conviviente civil</option><option>Divorciado/a</option>
+              <option>Viudo/a</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nivelEduc">Nivel educacional</label>
+            <select class="form-select" id="nivelEduc">
+              <option value="">Seleccionar...</option>
+              <option>Básica incompleta</option><option>Básica completa</option>
+              <option>Media incompleta</option><option>Media completa</option>
+              <option>Técnico nivel superior</option>
+              <option>Universitaria incompleta</option>
+              <option>Universitaria completa</option>
+              <option>Postgrado</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="subsection">Contacto y domicilio</div>
+        <div class="form-grid cols-3">
+          <div class="form-group">
+            <label class="form-label" for="telefono">Teléfono <span class="required">*</span></label>
+            <input class="form-input" id="telefono" placeholder="+56 9 XXXX XXXX" oninput="validateField(this)">
+            <span class="field-error" id="err-telefono">Campo requerido</span>
+          </div>
+          <div class="form-group col-span-2">
+            <label class="form-label" for="email">Correo electrónico <span class="required">*</span></label>
+            <input class="form-input" id="email" type="email"
+                   placeholder="correo@ejemplo.com" oninput="validateEmail(this)">
+            <span class="field-error" id="err-email">Correo inválido</span>
+          </div>
+          <div class="form-group col-span-2">
+            <label class="form-label" for="direccion">Dirección</label>
+            <input class="form-input" id="direccion" placeholder="Calle, número, depto.">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ciudad">Ciudad</label>
+            <input class="form-input" id="ciudad" placeholder="Ej: Santiago">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="region">Región</label>
+            <select class="form-select" id="region">
+              <option value="">Seleccionar...</option>
+              <option>Metropolitana de Santiago</option><option>Valparaíso</option>
+              <option>Biobío</option><option>La Araucanía</option>
+              <option>Maule</option><option>O'Higgins</option>
+              <option>Los Lagos</option><option>Coquimbo</option>
+              <option>Antofagasta</option><option>Atacama</option>
+              <option>Tarapacá</option><option>Arica y Parinacota</option>
+              <option>Ñuble</option><option>Los Ríos</option>
+              <option>Aysén</option><option>Magallanes</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── PASO 1: DATOS LABORALES ── -->
+    <div class="section" id="step-1">
+      <div class="section-header">
+        <div class="section-icon">💼</div>
+        <div>
+          <div class="section-title">Datos laborales</div>
+          <div class="section-desc">Información del cargo, contrato y remuneración</div>
+        </div>
+      </div>
+      <div class="section-body">
+
+        <div class="subsection">Cargo y área</div>
+        <div class="form-grid cols-3">
+          <div class="form-group">
+            <label class="form-label" for="codEmpleado">Código de empleado <span class="required">*</span></label>
+            <input class="form-input" id="codEmpleado" placeholder="Ej: EMP-0001" oninput="validateField(this)">
+            <span class="field-error" id="err-codEmpleado">Campo requerido</span>
+          </div>
+          <div class="form-group col-span-2">
+            <label class="form-label" for="cargo">Cargo / Puesto <span class="required">*</span></label>
+            <input class="form-input" id="cargo" placeholder="Ej: Guardia de seguridad" oninput="validateField(this)">
+            <span class="field-error" id="err-cargo">Campo requerido</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="area">Área / Departamento <span class="required">*</span></label>
+            <select class="form-select" id="area" onchange="validateField(this)">
+              <option value="">Seleccionar...</option>
+              <option>Operaciones</option><option>Administración</option>
+              <option>Recursos Humanos</option><option>Tecnología</option>
+              <option>Finanzas</option><option>Ventas</option>
+              <option>Logística</option><option>Gerencia</option>
+            </select>
+            <span class="field-error" id="err-area">Campo requerido</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="centroCosto">Centro de costo</label>
+            <input class="form-input" id="centroCosto" placeholder="Ej: CC-001">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="sucursal">Sucursal / Faena</label>
+            <input class="form-input" id="sucursal" placeholder="Ej: Casa Matriz">
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="subsection">Contrato</div>
+        <div class="form-grid cols-3">
+          <div class="form-group">
+            <label class="form-label" for="tipoContrato">Tipo de contrato <span class="required">*</span></label>
+            <select class="form-select" id="tipoContrato" onchange="validateField(this)">
+              <option value="">Seleccionar...</option>
+              <option>Indefinido</option><option>Plazo fijo</option>
+              <option>Por obra o faena</option><option>Part-time</option>
+              <option>Práctica profesional</option>
+            </select>
+            <span class="field-error" id="err-tipoContrato">Campo requerido</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="fechaIngreso">Fecha de ingreso <span class="required">*</span></label>
+            <input class="form-input" type="date" id="fechaIngreso" oninput="validateField(this)">
+            <span class="field-error" id="err-fechaIngreso">Campo requerido</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="fechaTermino">Fecha de término</label>
+            <input class="form-input" type="date" id="fechaTermino">
+            <span class="form-hint">Dejar vacío si es contrato indefinido</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="jornada">Jornada laboral <span class="required">*</span></label>
+            <select class="form-select" id="jornada" onchange="validateField(this)">
+              <option value="">Seleccionar...</option>
+              <option>45 horas semanales</option><option>44 horas semanales</option>
+              <option>40 horas semanales</option><option>Jornada parcial</option>
+              <option>Turno rotativo</option><option>Jornada excepcional</option>
+            </select>
+            <span class="field-error" id="err-jornada">Campo requerido</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="horario">Horario</label>
+            <input class="form-input" id="horario" placeholder="Ej: Lun-Vie 08:00-17:30">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="calidadJuridica">Calidad jurídica</label>
+            <select class="form-select" id="calidadJuridica">
+              <option value="">Seleccionar...</option>
+              <option>Trabajador dependiente</option>
+              <option>Trabajador independiente</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="subsection">Remuneración</div>
+        <div class="form-grid cols-3">
+          <div class="form-group">
+            <label class="form-label" for="sueldoBase">Sueldo base (CLP) <span class="required">*</span></label>
+            <input class="form-input" id="sueldoBase" placeholder="Ej: 500000"
+                   type="number" oninput="validateField(this)">
+            <span class="field-error" id="err-sueldoBase">Campo requerido</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="gratificacion">Gratificación</label>
+            <select class="form-select" id="gratificacion">
+              <option value="">Seleccionar...</option>
+              <option>Garantizada 25%</option>
+              <option>Legal anual</option>
+              <option>No aplica</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="formaPago">Forma de pago</label>
+            <select class="form-select" id="formaPago">
+              <option value="">Seleccionar...</option>
+              <option>Transferencia bancaria</option>
+              <option>Cheque</option><option>Efectivo</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="banco">Banco</label>
+            <select class="form-select" id="banco">
+              <option value="">Seleccionar...</option>
+              <option>Banco de Chile</option><option>BancoEstado</option>
+              <option>Santander</option><option>BCI</option>
+              <option>Itaú</option><option>BICE</option>
+              <option>Scotiabank</option><option>Falabella</option>
+              <option>Ripley</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="tipoCuenta">Tipo de cuenta</label>
+            <select class="form-select" id="tipoCuenta">
+              <option value="">Seleccionar...</option>
+              <option>Cuenta corriente</option><option>Cuenta vista</option>
+              <option>Cuenta de ahorro</option><option>CuentaRUT</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="numCuenta">N° de cuenta</label>
+            <input class="form-input" id="numCuenta" placeholder="Número de cuenta">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── PASO 2: PREVISIÓN ── -->
+    <div class="section" id="step-2">
+      <div class="section-header">
+        <div class="section-icon">🏥</div>
+        <div>
+          <div class="section-title">Previsión social y salud</div>
+          <div class="section-desc">AFP, sistema de salud y seguros asociados</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="info-box">
+          ℹ️ Esta información se utiliza para el cálculo automático de descuentos en la liquidación de sueldo.
+        </div>
+        <div class="form-grid cols-3">
+          <div class="form-group">
+            <label class="form-label" for="afp">AFP <span class="required">*</span></label>
+            <select class="form-select" id="afp" onchange="validateField(this)">
+              <option value="">Seleccionar...</option>
+              <option>Capital</option><option>Cuprum</option>
+              <option>Habitat</option><option>Modelo</option>
+              <option>PlanVital</option><option>ProVida</option>
+              <option>Uno</option>
+              <option>No cotiza (dependiente antiguo)</option>
+            </select>
+            <span class="field-error" id="err-afp">Campo requerido</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="salud">Sistema de salud <span class="required">*</span></label>
+            <select class="form-select" id="salud" onchange="updateIsapre(this)">
+              <option value="">Seleccionar...</option>
+              <option>FONASA</option>
+              <option>ISAPRE</option>
+            </select>
+            <span class="field-error" id="err-salud">Campo requerido</span>
+          </div>
+          <div class="form-group" id="isapre-group" style="display:none">
+            <label class="form-label" for="isapre">ISAPRE</label>
+            <select class="form-select" id="isapre">
+              <option value="">Seleccionar...</option>
+              <option>Banmédica</option><option>Colmena</option>
+              <option>Cruz Blanca</option><option>Cruz del Norte</option>
+              <option>Esencial</option><option>Nueva Masvida</option>
+              <option>Vida Tres</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cotSalud">% cotización salud</label>
+            <select class="form-select" id="cotSalud">
+              <option>7% (base legal)</option>
+              <option>No aplica</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="segCesantia">Seguro de cesantía</label>
+            <select class="form-select" id="segCesantia">
+              <option>AFC Chile (obligatorio)</option>
+              <option>No aplica (contrato anterior a 2002)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="mutualidad">Mutualidad (seguro laboral)</label>
+            <select class="form-select" id="mutualidad">
+              <option value="">Seleccionar...</option>
+              <option>Mutual de Seguridad CChC</option>
+              <option>ACHS</option><option>IST</option>
+              <option>ISL (antes INP)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="tramoFonasa">Tramo FONASA</label>
+            <select class="form-select" id="tramoFonasa">
+              <option value="">No aplica</option>
+              <option>Tramo A (indigente)</option>
+              <option>Tramo B</option><option>Tramo C</option><option>Tramo D</option>
+            </select>
+          </div>
+          <div class="form-group col-span-2">
+            <label class="form-label" for="obsProvision">Observaciones previsión</label>
+            <textarea class="form-textarea" id="obsProvision"
+              placeholder="Ej: convenio especial, cotización adicional voluntaria..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── PASO 3: CARGAS FAMILIARES ── -->
+    <div class="section" id="step-3">
+      <div class="section-header">
+        <div class="section-icon">👨‍👩‍👧</div>
+        <div>
+          <div class="section-title">Cargas familiares</div>
+          <div class="section-desc">Dependientes con derecho a asignación familiar</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <div class="subsection" style="margin:0">Listado de cargas</div>
+          <button class="btn btn-secondary btn-sm" onclick="addCarga()">+ Agregar carga</button>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="cargas-table">
+            <thead>
+              <tr>
+                <th>Nombre completo</th>
+                <th>RUT</th>
+                <th>Parentesco</th>
+                <th>Fecha nac.</th>
+                <th>Discapacidad</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="cargas-tbody">
+              <tr id="cargas-empty-row">
+                <td colspan="6" class="cargas-empty">Sin cargas familiares registradas</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="divider"></div>
+        <div class="subsection">Resumen de asignación familiar</div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-card-label">N° de cargas</div>
+            <div class="stat-card-value" id="count-cargas">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Hijos</div>
+            <div class="stat-card-value" id="count-hijos">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Con discapacidad</div>
+            <div class="stat-card-value" id="count-disc">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── BARRA DE ACCIONES ── -->
+    <div class="actions-bar">
+      <button class="btn btn-secondary" id="btn-prev"
+              onclick="prevStep()" style="display:none">← Anterior</button>
+      <div class="actions-right">
+        <button class="btn btn-secondary" onclick="showList()">Cancelar</button>
+        <button class="btn btn-primary"   id="btn-next" onclick="nextStep()">Siguiente →</button>
+        <button class="btn btn-success"   id="btn-save"
+                onclick="saveEmployee()" style="display:none">✓ Guardar empleado</button>
+      </div>
+    </div>
+
+  </div><!-- /form-view -->
+</div><!-- /page -->
+
+<!-- TOAST DE NOTIFICACIONES -->
+<div class="toast" id="toast"></div>
+
+<!-- ── SCRIPTS (orden importante) ── -->
+<script src="../../../js/utils.js"></script>
+<script src="stepper.js"></script>
+<script src="cargas.js"></script>
+<script src="empleados.js"></script>
+<script>
+  // Inicializar la vista al cargar la página
+  window.addEventListener('DOMContentLoaded', () => {
+    if (employees.length === 0) {
+      document.getElementById('form-view').style.display = 'block';
+    } else {
+      showList();
+    }
+  });
+</script>
+
+</body>
+</html>
