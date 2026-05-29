@@ -23,4 +23,9 @@ app.listen(PORT, () => {
   console.log('Servidor corriendo en http://localhost:' + PORT);
 });
 
+// ERPS 11 - Bodegas
+const bodegaRoutes = require('./modulos/inventario/ERPS 11/routes/bodegaRoutes');
+app.use('/api/bodegas', bodegaRoutes);
+
 module.exports = app;
+

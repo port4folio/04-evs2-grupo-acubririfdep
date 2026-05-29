@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERPS-11 · Bodegas</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0d0f14;
+      --surface:   #141720;
+      --border:    #232736;
+      --accent:    #4af0a0;
+      --accent2:   #f0a04a;
+      --danger:    #f04a6a;
+      --text:      #d8dde8;
+      --muted:     #5a6278;
+      --radius:    6px;
+      --mono:      'IBM Plex Mono', monospace;
+      --display:   'Syne', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      min-height: 100vh;
+    }
+
+    /* ── TOPBAR ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
+    }
+    .logo {
+      font-family: var(--display);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--muted); font-weight: 700; }
+    .header-sep { flex: 1; }
+    .badge {
+      background: var(--border);
+      color: var(--muted);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── LAYOUT ── */
+    .shell {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: calc(100vh - 57px);
+    }
+
+    /* ── SIDEBAR ── */
+    nav {
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .nav-section {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 14px 20px 6px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all .15s;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+    .nav-item:hover { color: var(--text); background: var(--surface); }
+    .nav-item.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: rgba(74,240,160,.06);
+    }
+    .nav-item .icon { width: 16px; text-align: center; opacity: .8; }
+
+    /* ── MAIN ── */
+    main { padding: 28px 32px; overflow-y: auto; }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .page-title {
+      font-family: var(--display);
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .page-sub { color: var(--muted); margin-bottom: 24px; }
+
+    /* ── CARDS / PANELS ── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      margin-bottom: 20px;
+    }
+    .panel-title {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    /* ── GRID STATS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+    }
+    .stat-card.orange::after { background: var(--accent2); }
+    .stat-card.red::after    { background: var(--danger); }
+    .stat-num {
+      font-family: var(--display);
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+    }
+    .stat-label { color: var(--muted); font-size: 11px; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* ── FORM ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+    input, select, textarea {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color .15s;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 68px; }
+    select option { background: var(--surface); }
+
+    .btn {
+      padding: 9px 20px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      transition: all .15s;
+    }
+    .btn-primary { background: var(--accent); color: #0d0f14; }
+    .btn-primary:hover { filter: brightness(1.1); }
+    .btn-danger  { background: var(--danger);  color: #fff; }
+    .btn-ghost   { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .form-actions { margin-top: 16px; display: flex; gap: 10px; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 24px; right: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      font-size: 12.5px;
+      max-width: 320px;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all .3s;
+      z-index: 999;
+      border-left: 3px solid var(--accent);
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.error { border-left-color: var(--danger); }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { border-bottom: 1px solid var(--border); }
+    th {
+      text-align: left;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 8px 12px;
+      font-weight: 500;
+    }
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid rgba(35,39,54,.6);
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,.02); }
+
+    .chip {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .chip-in  { background: rgba(74,240,160,.12); color: var(--accent); }
+    .chip-out { background: rgba(240,74,106,.12);  color: var(--danger); }
+
+    .tag-id {
+      color: var(--accent2);
+      font-weight: 600;
+    }
+
+    /* ── BODEGA CARDS ── */
+    .bodegas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .bodega-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: border-color .15s;
+      position: relative;
+    }
+    .bodega-card:hover { border-color: var(--accent); }
+    .bodega-card .bc-id { color: var(--accent2); font-size: 11px; font-weight: 600; margin-bottom: 6px; }
+    .bodega-card .bc-name { color: #fff; font-size: 15px; font-family: var(--display); font-weight: 700; margin-bottom: 4px; }
+    .bodega-card .bc-loc { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
+    .bodega-card .bc-desc { color: var(--muted); font-size: 12px; font-style: italic; margin-bottom: 12px; }
+    .bc-stock-title { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .bc-stock-row { display: flex; justify-content: space-between; font-size: 12px; padding: 3px 0; border-bottom: 1px solid var(--border); }
+    .bc-stock-row:last-child { border-bottom: none; }
+    .bc-empty { color: var(--muted); font-size: 12px; font-style: italic; }
+    .bc-tag { position: absolute; top: 14px; right: 14px; }
+
+    /* ── REPORTE ── */
+    .rep-bodega {
+      margin-bottom: 20px;
+    }
+    .rep-bodega-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .rep-bodega-name {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 16px;
+      color: #fff;
+    }
+    .rep-bodega-id { color: var(--accent2); font-size: 11px; }
+    .rep-bodega-loc { color: var(--muted); font-size: 12px; }
+
+    /* ── EMPTY STATE ── */
+    .empty {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--muted);
+    }
+    .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: .4; }
+    .empty-text { font-size: 13px; }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .filter-bar input, .filter-bar select { max-width: 220px; }
+    .filter-bar label { white-space: nowrap; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">BODEGA<span></span></div>
+  <div class="badge">Módulo de Inventario</div>
+  <div class="header-sep"></div>
+  <div class="badge" id="clock">--:--:--</div>
+</header>
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <nav>
+    <div class="nav-section">Vistas</div>
+    <div class="nav-item active" data-page="dashboard" onclick="navTo(this)">
+      <span class="icon">▣</span> Dashboard
+    </div>
+    <div class="nav-item" data-page="bodegas" onclick="navTo(this)">
+      <span class="icon">⬡</span> Bodegas
+    </div>
+    <div class="nav-item" data-page="movimientos" onclick="navTo(this)">
+      <span class="icon">⇄</span> Movimientos
+    </div>
+    <div class="nav-item" data-page="reporte" onclick="navTo(this)">
+      <span class="icon">◫</span> Reporte Stock
+    </div>
+
+    <div class="nav-section" style="margin-top:16px;">Acciones</div>
+    <div class="nav-item" data-page="crear-bodega" onclick="navTo(this)">
+      <span class="icon">+</span> Nueva Bodega
+    </div>
+    <div class="nav-item" data-page="crear-movimiento" onclick="navTo(this)">
+      <span class="icon">↑↓</span> Registrar Movimiento
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- ══════════════════ DASHBOARD ══════════════════ -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-title">Principal</div>
+      <div class="page-sub">Vista general del inventario de bodegas</div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-num" id="stat-bodegas">0</div>
+          <div class="stat-label">Bodegas Activas</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-num" id="stat-movimientos">0</div>
+          <div class="stat-label">Movimientos Totales</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-num" id="stat-entradas">0</div>
+          <div class="stat-label">Entradas / <span id="stat-salidas">0</span> Salidas</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Últimos Movimientos</div>
+        <div class="table-wrap">
+          <table id="tbl-dashboard">
+            <thead>
+              <tr>
+                <th>ID</th><th>Bodega</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-dashboard">
+              <tr><td colspan="6"><div class="empty"><div class="empty-icon">⇄</div><div class="empty-text">Sin movimientos aún</div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ BODEGAS ══════════════════ -->
+    <div class="page" id="page-bodegas">
+      <div class="page-title">Bodegas</div>
+      <div class="page-sub">Listado completo de bodegas registradas</div>
+      <div class="bodegas-grid" id="bodegas-grid">
+        <div class="empty" style="grid-column:1/-1">
+          <div class="empty-icon">⬡</div>
+          <div class="empty-text">No hay bodegas. Crea una primera.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ MOVIMIENTOS ══════════════════ -->
+    <div class="page" id="page-movimientos">
+      <div class="page-title">Movimientos</div>
+      <div class="page-sub">Historial de entradas y salidas de stock</div>
+
+      <div class="filter-bar">
+        <label>Bodega:</label>
+        <select id="filter-bodega" onchange="renderMovimientos()">
+          <option value="">— Todas —</option>
+        </select>
+        <label>Tipo:</label>
+        <select id="filter-tipo" onchange="renderMovimientos()">
+          <option value="">— Todos —</option>
+          <option value="entrada">Entrada</option>
+          <option value="salida">Salida</option>
+        </select>
+      </div>
+
+      <div class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th><th>Bodega</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Observación</th><th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-movimientos">
+              <tr><td colspan="7"><div class="empty"><div class="empty-icon">⇄</div><div class="empty-text">Sin movimientos</div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ REPORTE STOCK ══════════════════ -->
+    <div class="page" id="page-reporte">
+      <div class="page-title">Reporte de Stock</div>
+      <div class="page-sub">Inventario por bodega en tiempo real</div>
+      <div id="reporte-content">
+        <div class="empty">
+          <div class="empty-icon">◫</div>
+          <div class="empty-text">Sin datos de stock</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ CREAR BODEGA ══════════════════ -->
+    <div class="page" id="page-crear-bodega">
+      <div class="page-title">Nueva Bodega</div>
+      <div class="page-sub">Registra una nueva ubicación de almacenamiento</div>
+
+      <div class="panel">
+        <div class="panel-title">Datos de la Bodega</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" id="nb-nombre" placeholder="Ej: Bodega Central" />
+          </div>
+          <div class="form-group">
+            <label>Ubicación *</label>
+            <input type="text" id="nb-ubicacion" placeholder="Ej: Piso 2, Edificio A" />
+          </div>
+          <div class="form-group full">
+            <label>Descripción</label>
+            <textarea id="nb-descripcion" placeholder="Descripción opcional..."></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="crearBodega()">Crear Bodega</button>
+          <button class="btn btn-ghost" onclick="limpiarFormBodega()">Limpiar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ CREAR MOVIMIENTO ══════════════════ -->
+    <div class="page" id="page-crear-movimiento">
+      <div class="page-title">Registrar Movimiento</div>
+      <div class="page-sub">Registra una entrada o salida de producto en una bodega</div>
+
+      <div class="panel">
+        <div class="panel-title">Datos del Movimiento</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Bodega *</label>
+            <select id="nm-bodega">
+              <option value="">— Selecciona bodega —</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Código Producto *</label>
+            <input type="text" id="nm-producto" placeholder="Ej: PROD-001" />
+          </div>
+          <div class="form-group">
+            <label>Tipo *</label>
+            <select id="nm-tipo">
+              <option value="entrada">Entrada</option>
+              <option value="salida">Salida</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Cantidad *</label>
+            <input type="number" id="nm-cantidad" min="1" placeholder="0" />
+          </div>
+          <div class="form-group full">
+            <label>Observación</label>
+            <input type="text" id="nm-observacion" placeholder="Opcional..." />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="registrarMovimiento()">Registrar</button>
+          <button class="btn btn-ghost" onclick="limpiarFormMovimiento()">Limpiar</button>
+        </div>
+      </div>
+
+      <!-- Stock actual en bodega seleccionada -->
+      <div class="panel" id="stock-preview" style="display:none;">
+        <div class="panel-title">Stock actual en bodega seleccionada</div>
+        <div id="stock-preview-content"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+  // ══════════════════════════════════════════
+  // ESTADO EN MEMORIA (simula el backend)
+  // ══════════════════════════════════════════
+  let bodegas     = [];
+  let movimientos = [];
+  let nextBodId   = 1;
+  let nextMovId   = 1;
+
+  // Catálogo de productos simulado (ERPS-10)
+  const catalogo = [
+    { codigo: 'PROD-001', nombre: 'Tornillos M6', stockActual: 0 },
+    { codigo: 'PROD-002', nombre: 'Planchas Acero', stockActual: 0 },
+    { codigo: 'PROD-003', nombre: 'Cable UTP Cat6', stockActual: 0 },
+    { codigo: 'PROD-004', nombre: 'Pintura Blanca 5L', stockActual: 0 },
+    { codigo: 'PROD-005', nombre: 'Guantes Nitril Caja', stockActual: 0 },
+  ];
+
+  // ── NAVEGACIÓN ──────────────────────────────────
+  function navTo(el) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    const id = 'page-' + el.dataset.page;
+    document.getElementById(id).classList.add('active');
+
+    // Actualizar datos al cambiar de página
+    const page = el.dataset.page;
+    if (page === 'dashboard')        renderDashboard();
+    if (page === 'bodegas')          renderBodegas();
+    if (page === 'movimientos')      { actualizarFiltros(); renderMovimientos(); }
+    if (page === 'reporte')          renderReporte();
+    if (page === 'crear-movimiento') { poblarSelectBodegas('#nm-bodega'); actualizarStockPreview(); }
+  }
+
+  // ── TOAST ────────────────────────────────────────
+  function toast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show' + (isError ? ' error' : '');
+    setTimeout(() => t.className = '', 3000);
+  }
+
+  // ── RELOJ ────────────────────────────────────────
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent = now.toLocaleTimeString('es-CL');
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // ── HELPERS ─────────────────────────────────────
+  function fmtFecha(iso) {
+    return new Date(iso).toLocaleString('es-CL', { dateStyle: 'short', timeStyle: 'short' });
+  }
+  function padId(n, prefix, len) {
+    return `${prefix}-${String(n).padStart(len, '0')}`;
+  }
+  function getNombreBodega(id) {
+    const b = bodegas.find(x => x.id === id);
+    return b ? b.nombre : id;
+  }
+  function getNombreProducto(cod) {
+    const p = catalogo.find(x => x.codigo === cod);
+    return p ? p.nombre : cod;
+  }
+
+  // ── CREAR BODEGA ─────────────────────────────────
+  function crearBodega() {
+    const nombre    = document.getElementById('nb-nombre').value.trim();
+    const ubicacion = document.getElementById('nb-ubicacion').value.trim();
+    const desc      = document.getElementById('nb-descripcion').value.trim();
+
+    if (!nombre || !ubicacion) { toast('Nombre y Ubicación son requeridos.', true); return; }
+    if (bodegas.find(b => b.nombre.toLowerCase() === nombre.toLowerCase())) {
+      toast(`Ya existe una bodega con el nombre "${nombre}"`, true); return;
+    }
+
+    const bodega = {
+      id: padId(nextBodId++, 'BOD', 3),
+      nombre, ubicacion,
+      descripcion: desc,
+      stock: {},
+      creadoEn: new Date().toISOString()
+    };
+    bodegas.push(bodega);
+    limpiarFormBodega();
+    toast(`Bodega "${bodega.nombre}" creada — ${bodega.id}`);
+    renderDashboard();
+  }
+
+  function limpiarFormBodega() {
+    ['nb-nombre','nb-ubicacion','nb-descripcion'].forEach(id => document.getElementById(id).value = '');
+  }
+
+  // ── REGISTRAR MOVIMIENTO ──────────────────────────
+  function registrarMovimiento() {
+    const bodegaId = document.getElementById('nm-bodega').value;
+    const codigo   = document.getElementById('nm-producto').value.trim().toUpperCase();
+    const tipo     = document.getElementById('nm-tipo').value;
+    const cantidad = parseInt(document.getElementById('nm-cantidad').value);
+    const obs      = document.getElementById('nm-observacion').value.trim();
+
+    if (!bodegaId)       { toast('Selecciona una bodega.', true); return; }
+    if (!codigo)         { toast('Ingresa el código del producto.', true); return; }
+    if (!cantidad || cantidad <= 0) { toast('Cantidad inválida.', true); return; }
+
+    const bodega  = bodegas.find(b => b.id === bodegaId);
+    if (!bodega)  { toast('Bodega no encontrada.', true); return; }
+
+    const producto = catalogo.find(p => p.codigo === codigo);
+    if (!producto) { toast(`Producto "${codigo}" no existe en el catálogo.`, true); return; }
+
+    const stockActual = bodega.stock[codigo] || 0;
+    if (tipo === 'salida' && cantidad > stockActual) {
+      toast(`Stock insuficiente. Disponible en bodega: ${stockActual}`, true); return;
+    }
+
+    // Actualizar stock
+    bodega.stock[codigo] = tipo === 'entrada' ? stockActual + cantidad : stockActual - cantidad;
+    producto.stockActual += tipo === 'entrada' ? cantidad : -cantidad;
+
+    const mov = {
+      id: padId(nextMovId++, 'MOV', 4),
+      bodegaId, codigoProducto: codigo, tipo, cantidad, observacion: obs,
+      fecha: new Date().toISOString()
+    };
+    movimientos.push(mov);
+    limpiarFormMovimiento();
+    actualizarStockPreview();
+    toast(`Movimiento ${mov.id} registrado — ${tipo} de ${cantidad} × ${codigo}`);
+    renderDashboard();
+  }
+
+  function limpiarFormMovimiento() {
+    document.getElementById('nm-producto').value   = '';
+    document.getElementById('nm-cantidad').value   = '';
+    document.getElementById('nm-observacion').value = '';
+  }
+
+  // ── POBLAR SELECTS ───────────────────────────────
+  function poblarSelectBodegas(selector) {
+    const sel = document.querySelector(selector);
+    const val = sel.value;
+    sel.innerHTML = '<option value="">— Selecciona bodega —</option>';
+    bodegas.forEach(b => {
+      const o = document.createElement('option');
+      o.value = b.id; o.textContent = `${b.id} · ${b.nombre}`;
+      sel.appendChild(o);
+    });
+    if (val) sel.value = val;
+  }
+
+  function actualizarFiltros() {
+    const sel = document.getElementById('filter-bodega');
+    const val = sel.value;
+    sel.innerHTML = '<option value="">— Todas —</option>';
+    bodegas.forEach(b => {
+      const o = document.createElement('option');
+      o.value = b.id; o.textContent = `${b.id} · ${b.nombre}`;
+      sel.appendChild(o);
+    });
+    if (val) sel.value = val;
+  }
+
+  // ── STOCK PREVIEW ────────────────────────────────
+  function actualizarStockPreview() {
+    const bodegaId = document.getElementById('nm-bodega').value;
+    const preview  = document.getElementById('stock-preview');
+    const content  = document.getElementById('stock-preview-content');
+
+    if (!bodegaId) { preview.style.display = 'none'; return; }
+
+    const bodega = bodegas.find(b => b.id === bodegaId);
+    if (!bodega)  { preview.style.display = 'none'; return; }
+
+    const keys = Object.keys(bodega.stock);
+    if (!keys.length) {
+      content.innerHTML = '<div class="empty" style="padding:16px"><div class="empty-text">Sin stock registrado</div></div>';
+    } else {
+      content.innerHTML = '<table style="width:100%"><thead><tr><th>Código</th><th>Producto</th><th>Stock</th></tr></thead><tbody>' +
+        keys.map(k => `<tr>
+          <td class="tag-id">${k}</td>
+          <td>${getNombreProducto(k)}</td>
+          <td style="color:var(--accent);font-weight:600">${bodega.stock[k]}</td>
+        </tr>`).join('') +
+        '</tbody></table>';
+    }
+    preview.style.display = 'block';
+  }
+
+  document.getElementById('nm-bodega').addEventListener('change', actualizarStockPreview);
+
+  // ── RENDER DASHBOARD ─────────────────────────────
+  function renderDashboard() {
+    document.getElementById('stat-bodegas').textContent    = bodegas.length;
+    document.getElementById('stat-movimientos').textContent = movimientos.length;
+    document.getElementById('stat-entradas').textContent   = movimientos.filter(m => m.tipo === 'entrada').length;
+    document.getElementById('stat-salidas').textContent    = movimientos.filter(m => m.tipo === 'salida').length;
+
+    const tbody = document.getElementById('tbody-dashboard');
+    const ultimos = [...movimientos].reverse().slice(0, 10);
+    if (!ultimos.length) {
+      tbody.innerHTML = '<tr><td colspan="6"><div class="empty"><div class="empty-icon">⇄</div><div class="empty-text">Sin movimientos aún</div></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = ultimos.map(m => `<tr>
+      <td class="tag-id">${m.id}</td>
+      <td>${getNombreBodega(m.bodegaId)}</td>
+      <td>${getNombreProducto(m.codigoProducto)} <span style="color:var(--muted)">(${m.codigoProducto})</span></td>
+      <td><span class="chip ${m.tipo === 'entrada' ? 'chip-in' : 'chip-out'}">${m.tipo}</span></td>
+      <td style="font-weight:600">${m.cantidad}</td>
+      <td style="color:var(--muted)">${fmtFecha(m.fecha)}</td>
+    </tr>`).join('');
+  }
+
+  // ── RENDER BODEGAS ───────────────────────────────
+  function renderBodegas() {
+    const grid = document.getElementById('bodegas-grid');
+    if (!bodegas.length) {
+      grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="empty-icon">⬡</div><div class="empty-text">No hay bodegas. Crea una primera.</div></div>';
+      return;
+    }
+    grid.innerHTML = bodegas.map(b => {
+      const keys   = Object.keys(b.stock);
+      const stockH = keys.length
+        ? `<div class="bc-stock-title">Stock</div>` +
+          keys.map(k => `<div class="bc-stock-row"><span>${getNombreProducto(k)}</span><span style="color:var(--accent);font-weight:600">${b.stock[k]}</span></div>`).join('')
+        : '<div class="bc-empty">Sin stock registrado</div>';
+      return `<div class="bodega-card">
+        <div class="bc-tag"><span class="chip chip-in" style="font-size:10px">${b.id}</span></div>
+        <div class="bc-id">${b.id}</div>
+        <div class="bc-name">${b.nombre}</div>
+        <div class="bc-loc">📍 ${b.ubicacion}</div>
+        ${b.descripcion ? `<div class="bc-desc">${b.descripcion}</div>` : ''}
+        ${stockH}
+      </div>`;
+    }).join('');
+  }
+
+  // ── RENDER MOVIMIENTOS ───────────────────────────
+  function renderMovimientos() {
+    const bodegaId = document.getElementById('filter-bodega').value;
+    const tipo     = document.getElementById('filter-tipo').value;
+    let lista = [...movimientos].reverse();
+    if (bodegaId) lista = lista.filter(m => m.bodegaId === bodegaId);
+    if (tipo)     lista = lista.filter(m => m.tipo === tipo);
+
+    const tbody = document.getElementById('tbody-movimientos');
+    if (!lista.length) {
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="empty-icon">⇄</div><div class="empty-text">Sin movimientos</div></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = lista.map(m => `<tr>
+      <td class="tag-id">${m.id}</td>
+      <td>${getNombreBodega(m.bodegaId)} <span style="color:var(--muted);font-size:11px">(${m.bodegaId})</span></td>
+      <td>${getNombreProducto(m.codigoProducto)} <span style="color:var(--muted)">(${m.codigoProducto})</span></td>
+      <td><span class="chip ${m.tipo === 'entrada' ? 'chip-in' : 'chip-out'}">${m.tipo}</span></td>
+      <td style="font-weight:600">${m.cantidad}</td>
+      <td style="color:var(--muted)">${m.observacion || '—'}</td>
+      <td style="color:var(--muted)">${fmtFecha(m.fecha)}</td>
+    </tr>`).join('');
+  }
+
+  // ── RENDER REPORTE ────────────────────────────────
+  function renderReporte() {
+    const cont = document.getElementById('reporte-content');
+    if (!bodegas.length) {
+      cont.innerHTML = '<div class="empty"><div class="empty-icon">◫</div><div class="empty-text">Sin datos de stock</div></div>';
+      return;
+    }
+    cont.innerHTML = bodegas.map(b => {
+      const keys = Object.keys(b.stock);
+      const rows = keys.length
+        ? `<div class="table-wrap"><table>
+            <thead><tr><th>Código</th><th>Producto</th><th>Stock Bodega</th><th>Stock Global (ERPS-10)</th></tr></thead>
+            <tbody>${keys.map(k => {
+              const p = catalogo.find(x => x.codigo === k);
+              return `<tr>
+                <td class="tag-id">${k}</td>
+                <td>${p ? p.nombre : k}</td>
+                <td style="color:var(--accent);font-weight:600">${b.stock[k]}</td>
+                <td style="color:var(--accent2);font-weight:600">${p ? p.stockActual : '—'}</td>
+              </tr>`;
+            }).join('')}</tbody>
+          </table></div>`
+        : '<div class="bc-empty" style="padding:8px 0">Sin stock en esta bodega</div>';
+      return `<div class="panel rep-bodega">
+        <div class="rep-bodega-header">
+          <span class="rep-bodega-name">${b.nombre}</span>
+          <span class="rep-bodega-id">${b.id}</span>
+          <span class="rep-bodega-loc">· ${b.ubicacion}</span>
+        </div>
+        ${rows}
+      </div>`;
+    }).join('');
+  }
+
+  // ── INIT ─────────────────────────────────────────
+  renderDashboard();
+</script>
+</body>
+</html>
