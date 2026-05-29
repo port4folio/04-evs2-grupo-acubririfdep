@@ -5,29 +5,34 @@
 // Descripción: Gestión de roles y usuarios del sistema
 // ============================================================
 
-// usuarios base del sistema (cargados desde sessionStorage si existen)
-const DEFAULT_USERS = [
-  { username: "gabriel@seguridad.cl", role: "empleado" },
-  { username: "admin@seguridad.cl", role: "admin" },
-  { username: "rrhh@seguridad.cl", role: "rrhh" },
-  { username: "bodeguero@seguridad.cl", role: "bodeguero" }
-];
-
 /**
- * Carga los usuarios desde sessionStorage o usa los por defecto.
- * @returns {Array} Lista de usuarios
+ * Genera el hash SHA-256 de un texto.
+ * @param {string} text - Texto a hashear
+ * @returns {Promise<string>} Hash en formato hexadecimal
  */
-function loadUsers() {
-  const stored = sessionStorage.getItem("systemUsers");
-  return stored ? JSON.parse(stored) : DEFAULT_USERS;
+async function hashText(text) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
 /**
- * Guarda los usuarios en sessionStorage.
- * @param {Array} users - Lista de usuarios a guardar
+ * Carga los usuarios desde localStorage.
+ * @returns {Array} Lista de usuarios
+ */
+function loadUsers() {
+  const stored = localStorage.getItem("systemUsers");
+  return stored ? JSON.parse(stored) : [];
+}
+
+/**
+ * Guarda los usuarios en localStorage.
+ * @param {Array} users - Lista de usuarios
  */
 function saveUsers(users) {
-  sessionStorage.setItem("systemUsers", JSON.stringify(users));
+  localStorage.setItem("systemUsers", JSON.stringify(users));
 }
 
 /**
@@ -36,6 +41,11 @@ function saveUsers(users) {
 function renderUsersTable() {
   const users = loadUsers();
   const tbody = document.getElementById("usersTableBody");
+
+  if (users.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="2" style="text-align:center; color:#8b91a8">No hay usuarios registrados.</td></tr>`;
+    return;
+  }
 
   tbody.innerHTML = users.map(u => `
     <tr>
@@ -46,9 +56,9 @@ function renderUsersTable() {
 }
 
 /**
- * Crea un nuevo usuario y lo agrega a la lista.
+ * Crea un nuevo usuario con sus credenciales hasheadas.
  */
-function createUser() {
+async function createUser() {
   const username = document.getElementById("newUsername").value.trim();
   const password = document.getElementById("newPassword").value;
   const role = document.getElementById("newRole").value;
@@ -57,27 +67,43 @@ function createUser() {
 
   errorDiv.hidden = true;
   successDiv.hidden = true;
+  errorDiv.textContent = "Completa todos los campos.";
 
   if (!username || !password || !role) {
     errorDiv.hidden = false;
     return;
   }
 
+  const usernameHash = await hashText(username);
+  const passwordHash = await hashText(password);
+
   const users = loadUsers();
-  users.push({ username, role });
+
+  // verifica que el usuario no exista ya
+  const exists = users.find(u => u.usernameHash === usernameHash);
+  if (exists) {
+    errorDiv.textContent = "Este usuario ya existe.";
+    errorDiv.hidden = false;
+    return;
+  }
+
+  users.push({ username, usernameHash, passwordHash, role });
   saveUsers(users);
 
-  // limpia el formulario
+  console.log("Usuario creado:", { username, usernameHash, passwordHash, role });
+  console.log("Usuarios en localStorage:", loadUsers());
+
   document.getElementById("newUsername").value = "";
   document.getElementById("newPassword").value = "";
   document.getElementById("newRole").value = "empleado";
 
   successDiv.hidden = false;
+  renderUsersTable();
 }
 
 /**
  * Muestra la sección seleccionada y oculta las demás.
- * @param {string} sectionName - Nombre de la sección a mostrar
+ * @param {string} sectionName - Nombre de la sección
  */
 function showSection(sectionName) {
   document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
@@ -92,7 +118,7 @@ function showSection(sectionName) {
 }
 
 /**
- * Inicializa el dashboard verificando la sesión activa.
+ * Inicializa el panel verificando la sesión activa.
  */
 function init() {
   const role = sessionStorage.getItem("userRole");
