@@ -5,12 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ERP — Seguridad LTDA</title>
   <style>
-    /* ============================================================
-       ERP Seguridad LTDA — Página de inicio
-       Autor: Gabriel del Pino Carrasco
-       Descripción: Navbar con módulos del sistema
-       ============================================================ */
-
     :root {
       --color-bg: #0f1117;
       --color-card: #1a1d27;
@@ -22,11 +16,7 @@
       --font-main: 'Segoe UI', 'Helvetica Neue', sans-serif;
     }
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: var(--font-main);
@@ -35,7 +25,6 @@
       min-height: 100vh;
     }
 
-    /* Navbar */
     .navbar {
       background-color: var(--color-card);
       border-bottom: 1px solid var(--color-border);
@@ -55,11 +44,7 @@
       color: var(--color-text-primary);
     }
 
-    .navbar-nav {
-      display: flex;
-      gap: 0.25rem;
-      list-style: none;
-    }
+    .navbar-nav { display: flex; gap: 0.25rem; list-style: none; }
 
     .navbar-nav a {
       display: block;
@@ -71,12 +56,8 @@
       transition: background-color 0.2s, color 0.2s;
     }
 
-    .navbar-nav a:hover {
-      background-color: #22263a;
-      color: var(--color-text-primary);
-    }
+    .navbar-nav a:hover { background-color: #22263a; color: var(--color-text-primary); }
 
-    /* Hero */
     .hero {
       display: flex;
       flex-direction: column;
@@ -86,24 +67,10 @@
       text-align: center;
     }
 
-    .hero-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
+    .hero-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .hero p { color: var(--color-text-secondary); font-size: 1rem; margin-bottom: 3rem; }
 
-    .hero h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .hero p {
-      color: var(--color-text-secondary);
-      font-size: 1rem;
-      margin-bottom: 3rem;
-    }
-
-    /* Cards de módulos */
     .modules-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -125,33 +92,12 @@
       gap: 0.75rem;
     }
 
-    .module-card:hover {
-      border-color: var(--color-accent);
-      transform: translateY(-3px);
-    }
+    .module-card:hover { border-color: var(--color-accent); transform: translateY(-3px); }
+    .module-card .module-icon { font-size: 2rem; }
+    .module-card h3 { font-size: 1rem; font-weight: 600; }
+    .module-card p { font-size: 0.82rem; color: var(--color-text-secondary); line-height: 1.5; }
+    .module-card .module-arrow { font-size: 0.8rem; color: var(--color-accent); margin-top: auto; }
 
-    .module-card .module-icon {
-      font-size: 2rem;
-    }
-
-    .module-card h3 {
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    .module-card p {
-      font-size: 0.82rem;
-      color: var(--color-text-secondary);
-      line-height: 1.5;
-    }
-
-    .module-card .module-arrow {
-      font-size: 0.8rem;
-      color: var(--color-accent);
-      margin-top: auto;
-    }
-
-    /* Footer */
     .footer {
       text-align: center;
       padding: 2rem;
@@ -162,31 +108,23 @@
     }
 
     @media (max-width: 600px) {
-      .navbar-nav {
-        display: none;
-      }
-
-      .hero h1 {
-        font-size: 1.5rem;
-      }
+      .navbar-nav { display: none; }
+      .hero h1 { font-size: 1.5rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
   <nav class="navbar">
-    <div class="navbar-brand">
-      🔒 Seguridad LTDA
-    </div>
+    <div class="navbar-brand">🔒 Seguridad LTDA</div>
     <ul class="navbar-nav">
       <li><a href="modulos/portal empleado/ERPS 7/login.html">Portal Empleado</a></li>
-      <li><a href="modulos/rrss/ERPS 3/index.html">RRHH</a></li>
+      <li><a href="modulos/portal empleado/ERPS 7/login.html">RRHH</a></li>
       <li><a href="modulos/seguridad y administracion/ERPS 17/index.html">Administración</a></li>
+      <li><a href="">Inventario</a></li>
     </ul>
   </nav>
 
-  <!-- Hero -->
   <section class="hero">
     <div class="hero-icon">🏢</div>
     <h1>Sistema ERP — Seguridad LTDA</h1>
@@ -201,7 +139,7 @@
         <span class="module-arrow">Ingresar →</span>
       </a>
 
-      <a class="module-card" href="modulos/rrss/ERPS 3/index.html">
+      <a class="module-card" href="modulos/portal empleado/ERPS 7/login.html">
         <div class="module-icon">👥</div>
         <h3>Recursos Humanos</h3>
         <p>Gestiona fichas de empleados, asistencia, licencias y liquidaciones.</p>
@@ -212,6 +150,13 @@
         <div class="module-icon">🛡️</div>
         <h3>Seguridad y Administración</h3>
         <p>Gestiona usuarios, roles y permisos del sistema ERP.</p>
+        <span class="module-arrow">Ingresar →</span>
+      </a>
+
+      <a class="module-card" href="">
+        <div class="module-icon">📦</div>
+        <h3>Inventario / Bodega</h3>
+        <p>Gestiona stock, entradas y salidas de materiales y equipos de seguridad.</p>
         <span class="module-arrow">Ingresar →</span>
       </a>
 
