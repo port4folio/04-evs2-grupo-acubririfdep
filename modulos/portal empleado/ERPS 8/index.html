@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liquidaciones de Sueldo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-icon">💰</div>
+      <div class="header-texts">
+        <h1 class="header-title">Liquidaciones de Sueldo</h1>
+        <p class="header-sub">Consulta y descarga tus remuneraciones históricas</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-header" id="btn-demo">📥 Cargar demo</button>
+        <button class="btn-header btn-header--danger" id="btn-limpiar">🗑 Limpiar datos</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN LAYOUT -->
+  <div class="contenedor">
+
+    <!-- Alerta -->
+    <div id="alerta" class="alerta oculto"></div>
+
+    <!-- PERFIL -->
+    <section class="zona-perfil card">
+      <p class="card-titulo">👤 Perfil del Trabajador</p>
+      <div id="perfil-contenido"></div>
+    </section>
+
+    <!-- RESUMEN ANUAL -->
+    <section class="zona-resumen card">
+      <p class="card-titulo">📊 Resumen de Remuneraciones</p>
+      <div id="resumen-contenido"></div>
+    </section>
+
+    <!-- LISTA -->
+    <section class="zona-lista card">
+      <div class="lista-header">
+        <p class="card-titulo" style="margin-bottom:0">📋 Mis Liquidaciones</p>
+        <div class="lista-filtro">
+          <select id="filtro-año" title="Filtrar por año">
+            <option value="todos">Todos los años</option>
+          </select>
+        </div>
+      </div>
+      <div class="lista-items" id="lista-liquidaciones"></div>
+    </section>
+
+    <!-- DETALLE -->
+    <section class="zona-detalle panel-detalle" id="panel-detalle">
+      <div class="panel-header">
+        <span class="panel-header-titulo">📄 Detalle de Liquidación</span>
+        <div class="panel-acciones">
+          <button class="btn btn--outline" id="btn-imprimir">🖨 Imprimir</button>
+          <button class="btn btn--teal"    id="btn-descargar">⬇ Descargar</button>
+          <button class="btn btn--ghost"   id="btn-cerrar">✕</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="panel-vacio" id="panel-vacio">
+          <div class="panel-vacio-icon">📑</div>
+          <p>Selecciona una liquidación de la lista para ver su detalle.</p>
+        </div>
+        <div id="detalle-contenido"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="storage.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

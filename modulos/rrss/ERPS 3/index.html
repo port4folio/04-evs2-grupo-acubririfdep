@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generador de Contratos y Finiquitos</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <div>
+        <h1 class="header-title">Generador de Contratos y Finiquitos</h1>
+        <p class="header-sub">Sistema de gestión documental laboral</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- STATS -->
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card">
+        <span class="stat-num" id="st-empleados">0</span>
+        <span class="stat-label">Empleados</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="st-contratos">0</span>
+        <span class="stat-label">Contratos</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="st-finiquitos">0</span>
+        <span class="stat-label">Finiquitos</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="st-total-docs">0</span>
+        <span class="stat-label">Total documentos</span>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" data-tab="empleados">👤 Empleados</button>
+      <button class="tab" data-tab="generar">📄 Generar documento</button>
+      <button class="tab" data-tab="documentos">🗂️ Documentos</button>
+    </div>
+
+    <!-- ALERT -->
+    <div id="alert-box" class="alert hidden"></div>
+
+    <!-- TAB: EMPLEADOS -->
+    <section id="tab-empleados" class="tab-section active">
+
+      <div class="card">
+        <h2 class="card-title">Registrar empleado</h2>
+        <div class="grid-2">
+          <div class="field">
+            <label for="e-nombre">Nombre completo *</label>
+            <input id="e-nombre" type="text" placeholder="Juan Pérez González" />
+          </div>
+          <div class="field">
+            <label for="e-rut">RUT *</label>
+            <input id="e-rut" type="text" placeholder="12.345.678-9" />
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="field">
+            <label for="e-cargo">Cargo *</label>
+            <input id="e-cargo" type="text" placeholder="Desarrollador Full Stack" />
+          </div>
+          <div class="field">
+            <label for="e-depto">Departamento</label>
+            <input id="e-depto" type="text" placeholder="Tecnología" />
+          </div>
+          <div class="field">
+            <label for="e-sueldo">Sueldo base ($) *</label>
+            <input id="e-sueldo" type="number" placeholder="1000000" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="e-inicio">Fecha inicio contrato *</label>
+            <input id="e-inicio" type="date" />
+          </div>
+          <div class="field">
+            <label for="e-tipo">Tipo de contrato</label>
+            <select id="e-tipo">
+              <option value="indefinido">Indefinido</option>
+              <option value="plazo_fijo">Plazo fijo</option>
+              <option value="obra_faena">Obra o faena</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="e-email">Email</label>
+            <input id="e-email" type="email" placeholder="juan@empresa.com" />
+          </div>
+          <div class="field">
+            <label for="e-tel">Teléfono</label>
+            <input id="e-tel" type="text" placeholder="+56 9 1234 5678" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="e-direccion">Dirección del trabajador</label>
+          <input id="e-direccion" type="text" placeholder="Calle 123, Ciudad" />
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" id="btn-guardar-emp">Guardar empleado</button>
+          <button class="btn btn-secondary" id="btn-limpiar-emp">Limpiar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Empleados registrados</h2>
+        <div id="lista-empleados">
+          <p class="empty-msg">No hay empleados registrados aún.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB: GENERAR -->
+    <section id="tab-generar" class="tab-section">
+
+      <div class="card">
+        <h2 class="card-title">Tipo de documento</h2>
+        <div class="grid-2">
+          <div class="field">
+            <label for="g-tipo">Documento a generar *</label>
+            <select id="g-tipo">
+              <option value="contrato">Contrato de trabajo</option>
+              <option value="finiquito">Finiquito laboral</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="g-modalidad">Modalidad</label>
+            <select id="g-modalidad">
+              <option value="individual">Individual</option>
+              <option value="grupal">Grupal (seleccionar varios)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Datos del empleador</h2>
+        <div class="grid-2">
+          <div class="field">
+            <label for="g-empresa">Razón social *</label>
+            <input id="g-empresa" type="text" placeholder="TechSolutions SpA" />
+          </div>
+          <div class="field">
+            <label for="g-rut-emp">RUT empresa *</label>
+            <input id="g-rut-emp" type="text" placeholder="76.123.456-7" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="g-rep">Representante legal</label>
+            <input id="g-rep" type="text" placeholder="María González Rojas" />
+          </div>
+          <div class="field">
+            <label for="g-dir">Dirección empresa</label>
+            <input id="g-dir" type="text" placeholder="Av. Principal 1234, Santiago" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Individual -->
+      <div class="card" id="bloque-individual">
+        <h2 class="card-title">Seleccionar empleado</h2>
+        <div class="field">
+          <label for="g-empleado">Empleado *</label>
+          <select id="g-empleado">
+            <option value="">— Seleccionar empleado —</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Grupal -->
+      <div class="card hidden" id="bloque-grupal">
+        <h2 class="card-title">Seleccionar empleados</h2>
+        <div id="check-empleados">
+          <p class="empty-msg">Registra empleados primero.</p>
+        </div>
+      </div>
+
+      <!-- Finiquito -->
+      <div class="card hidden" id="bloque-finiquito">
+        <h2 class="card-title">Datos del finiquito</h2>
+        <div class="grid-2">
+          <div class="field">
+            <label for="f-fecha">Fecha de término *</label>
+            <input id="f-fecha" type="date" />
+          </div>
+          <div class="field">
+            <label for="f-causal">Causal de término *</label>
+            <select id="f-causal">
+              <option value="art159_1">Art. 159 N°1 – Mutuo acuerdo</option>
+              <option value="art159_2">Art. 159 N°2 – Renuncia voluntaria</option>
+              <option value="art159_3">Art. 159 N°3 – Muerte del trabajador</option>
+              <option value="art159_4">Art. 159 N°4 – Vencimiento del plazo</option>
+              <option value="art159_5">Art. 159 N°5 – Conclusión de la obra</option>
+              <option value="art161_1">Art. 161 N°1 – Necesidades de la empresa</option>
+              <option value="art160">Art. 160 – Despido por causal grave</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="field">
+            <label for="f-indemnizacion">Indemnización por años ($)</label>
+            <input id="f-indemnizacion" type="number" placeholder="0" />
+          </div>
+          <div class="field">
+            <label for="f-vacaciones">Vacaciones proporcionales ($)</label>
+            <input id="f-vacaciones" type="number" placeholder="0" />
+          </div>
+          <div class="field">
+            <label for="f-otros">Otros haberes ($)</label>
+            <input id="f-otros" type="number" placeholder="0" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-obs">Observaciones adicionales</label>
+          <textarea id="f-obs" placeholder="Notas o condiciones especiales del finiquito..."></textarea>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" id="btn-generar">Generar documento(s)</button>
+        <button class="btn btn-secondary" id="btn-ver-docs">Ver documentos generados</button>
+      </div>
+
+    </section>
+
+    <!-- TAB: DOCUMENTOS -->
+    <section id="tab-documentos" class="tab-section">
+      <div class="card">
+        <div class="card-title-row">
+          <h2 class="card-title">Documentos generados</h2>
+          <button class="btn btn-danger" id="btn-limpiar-docs">🗑 Limpiar todo</button>
+        </div>
+        <div id="lista-docs">
+          <p class="empty-msg">No hay documentos generados aún.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: ver documento -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Documento</h3>
+        <button class="modal-close" id="btn-modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <pre id="modal-content"></pre>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="btn-modal-download">Descargar .txt</button>
+        <button class="btn btn-secondary" id="btn-modal-close2">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="storage.js"></script>
+  <script src="documentos.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
