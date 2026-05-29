@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP — Seguridad LTDA</title>
+  <style>
+    /* ============================================================
+       ERP Seguridad LTDA — Página de inicio
+       Autor: Gabriel del Pino Carrasco
+       Descripción: Navbar con módulos del sistema
+       ============================================================ */
+
+    :root {
+      --color-bg: #0f1117;
+      --color-card: #1a1d27;
+      --color-border: #2e3248;
+      --color-accent: #3b82f6;
+      --color-accent-hover: #2563eb;
+      --color-text-primary: #e8eaf0;
+      --color-text-secondary: #8b91a8;
+      --font-main: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--color-bg);
+      color: var(--color-text-primary);
+      min-height: 100vh;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: var(--color-card);
+      border-bottom: 1px solid var(--color-border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+
+    .navbar-nav {
+      display: flex;
+      gap: 0.25rem;
+      list-style: none;
+    }
+
+    .navbar-nav a {
+      display: block;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .navbar-nav a:hover {
+      background-color: #22263a;
+      color: var(--color-text-primary);
+    }
+
+    /* Hero */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 5rem 2rem;
+      text-align: center;
+    }
+
+    .hero-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero p {
+      color: var(--color-text-secondary);
+      font-size: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    /* Cards de módulos */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .module-card {
+      background-color: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      padding: 1.75rem 1.5rem;
+      text-decoration: none;
+      color: var(--color-text-primary);
+      transition: border-color 0.2s, transform 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .module-card:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-3px);
+    }
+
+    .module-card .module-icon {
+      font-size: 2rem;
+    }
+
+    .module-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .module-card p {
+      font-size: 0.82rem;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+
+    .module-card .module-arrow {
+      font-size: 0.8rem;
+      color: var(--color-accent);
+      margin-top: auto;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.78rem;
+      color: var(--color-text-secondary);
+      border-top: 1px solid var(--color-border);
+      margin-top: 4rem;
+    }
+
+    @media (max-width: 600px) {
+      .navbar-nav {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      🔒 Seguridad LTDA
+    </div>
+    <ul class="navbar-nav">
+      <li><a href="modulos/portal empleado/ERPS 7/login.html">Portal Empleado</a></li>
+      <li><a href="modulos/rrss/ERPS 3/index.html">RRHH</a></li>
+      <li><a href="modulos/seguridad y administracion/ERPS 17/index.html">Administración</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-icon">🏢</div>
+    <h1>Sistema ERP — Seguridad LTDA</h1>
+    <p>Selecciona un módulo para continuar</p>
+
+    <div class="modules-grid">
+
+      <a class="module-card" href="modulos/portal empleado/ERPS 7/login.html">
+        <div class="module-icon">👤</div>
+        <h3>Portal del Empleado</h3>
+        <p>Accede a tus datos personales, liquidaciones, vacaciones y contratos.</p>
+        <span class="module-arrow">Ingresar →</span>
+      </a>
+
+      <a class="module-card" href="modulos/rrss/ERPS 3/index.html">
+        <div class="module-icon">👥</div>
+        <h3>Recursos Humanos</h3>
+        <p>Gestiona fichas de empleados, asistencia, licencias y liquidaciones.</p>
+        <span class="module-arrow">Ingresar →</span>
+      </a>
+
+      <a class="module-card" href="modulos/seguridad y administracion/ERPS 17/index.html">
+        <div class="module-icon">🛡️</div>
+        <h3>Seguridad y Administración</h3>
+        <p>Gestiona usuarios, roles y permisos del sistema ERP.</p>
+        <span class="module-arrow">Ingresar →</span>
+      </a>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    © 2025 Seguridad LTDA — Sistema ERP Web
+  </footer>
+
+</body>
+</html>
