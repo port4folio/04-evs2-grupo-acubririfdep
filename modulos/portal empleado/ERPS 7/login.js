@@ -33,6 +33,17 @@ const USERS = [
 ];
 
 /**
+ * Retorna la lista combinada de usuarios fijos y usuarios creados por el admin.
+ * @returns {Array} Lista completa de usuarios
+ */
+function getAllUsers() {
+  const stored = localStorage.getItem("systemUsers");
+  const dynamicUsers = stored ? JSON.parse(stored) : [];
+  console.log("Usuarios en localStorage al login:", dynamicUsers);
+  return [...USERS, ...dynamicUsers];
+}
+
+/**
  * Genera el hash SHA-256 de un texto.
  * @param {string} text - Texto a hashear
  * @returns {Promise<string>} Hash en formato hexadecimal
@@ -64,7 +75,8 @@ async function handleLogin(event) {
   const usernameHash = await hashText(usernameInput);
   const passwordHash = await hashText(passwordInput);
 
-  const userFound = USERS.find(
+  const allUsers = getAllUsers();
+  const userFound = allUsers.find(
     u => u.usernameHash === usernameHash && u.passwordHash === passwordHash
   );
 
