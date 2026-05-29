@@ -18,3 +18,5 @@ app.listen(PORT, () => {
 module.exports = app;
 
 
+const productoRoutes = require('./src/modules/inventario/routes/productoRoutes');
+app.use('/api/inventario', productoRoutes);
